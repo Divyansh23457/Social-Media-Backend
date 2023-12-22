@@ -8,7 +8,7 @@ export default class UserRepository{
         const newUser = new UserModel(userData)
         try{
             await newUser.save()
-            return newUser;
+            return newUser._doc;
             
         }catch(err){
             console.log(err)

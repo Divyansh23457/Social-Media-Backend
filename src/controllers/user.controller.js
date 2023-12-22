@@ -4,6 +4,7 @@ import  UserRepository  from "../Repositories/user.Repository.js";
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { cloudinaryUploadFile } from "../Utils/cloudinary.utility.js";
 dotenv.config()
 
 export default class userController{
@@ -13,18 +14,23 @@ export default class userController{
     }
 
     signup = async(req,res,next) =>{
-        const {username , password , email , gender} = req.body;
-        console.log(req.body.fullName)
-        if(!password || !username || !email || !fullName) {
+        const {name , password , email , gender} = req.body;
+        
+        if(!password || !name || !email || !gender) {
             return res.status(400).send("Please provide all the mandatory details.")
         }
         try{
+            let cloudinaryResponse
+            if(req.file){
+                cloudinaryResponse = await cloudinaryUploadFile(req.file.path)
+                console.log("Cloudinary Response -> " + JSON.stringify(cloudinaryResponse))
+            }
             const hashedPassword = await bcrypt.hash(password, 12)
-            const newUser = await this.userRepository.signup({username , email , gender , password:hashedPassword})
+            const newUser = await this.userRepository.signup({username : name , email , gender , password:hashedPassword ,profilePicture : cloudinaryResponse? cloudinaryResponse.secure_url : undefined  })
             if(!newUser){
                 throw new Error("Error while creating Account")
             }
-            return res.status(201).json(newUser)
+            return res.status(201).json({...newUser , password : undefined})
             
         }catch(err){
             console.log(err)
