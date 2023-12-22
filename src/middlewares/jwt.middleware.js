@@ -5,7 +5,7 @@ dotenv.config()
 
 const jwtAuth = (req,res,next) =>{
     const {jwtToken} = req.cookies;
-    console.log(jwtToken)
+    // console.log(jwtToken)
     if(!jwtToken){
         return res.status(401).send("Session expired.Please login again.")
     }
@@ -14,8 +14,11 @@ const jwtAuth = (req,res,next) =>{
             jwtToken,
             process.env.SECRETT
         )
-        req.userId = payload._id
-        req.user = payload.user
+        // console.log("Payload =>" + JSON.stringify(payload))
+        req.userId = payload._doc._id
+        req.user = payload._doc
+        // console.log(req.userId , "    . .. . " + req.user)
+        
     }catch(err){
         console.log(err)
         return res.status(401).send("Authentication Failed")
@@ -24,3 +27,5 @@ const jwtAuth = (req,res,next) =>{
 }
 
 export default jwtAuth
+
+ 

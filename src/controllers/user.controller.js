@@ -46,10 +46,9 @@ export default class userController{
             const user = await this.userRepository.signin({email , password})
             if(user){
                 // console.log("USER => " + user)
-                const token = jwt.sign({
-                    user,
-                    _id : user._id
-                }, process.env.SECRETT)
+                const token = jwt.sign(
+                    user
+                , process.env.SECRETT)
                 return res.status(200)
                           .cookie("jwtToken", token , {
                             maxAge: 1 * 60 * 60 * 1000 , httpOnly : true
@@ -67,7 +66,85 @@ export default class userController{
         }
 
     }
-    logout = (req,res,next) =>{}
-    logoutAll = (req,res,next) =>{}
-    
+    logout = (req,res,next) =>{
+        req.session = null
+        res.clearCookie('jwtToken')
+        return res.status(200).json({
+            success:true,
+            message:"Logged out successfully"
+        })
+    }
+    logoutAll = (req,res,next) =>{
+        req.session.destroy((err) => {
+            if (err) {
+              console.error('Error destroying session:', err);
+              res.status(500).send('Internal Server Error');
+            } else {
+              res.status(200).send('Logged out from all devices');
+            }
+          });
+    }
+    async getUserById(req,res){
+        const {userId} = req.params;
+        try{
+            const result = await this.userRepository.getUser(userId)
+            if(result){
+                return res.status(200).json({
+                    success:true,
+                    user : result
+                })
+            }else{
+                return res.status(400).json({
+                    success:false,
+                    message:"User could not be found"
+                })
+            }
+
+        }catch(err){
+            console.log(err)
+            console.log("Error while fetching user by user Id")
+        }
+    }
+
+    async getAllUsers(req,res){
+        try{
+            const users = await this.userRepository.getAllUsers()
+            if(users){
+                return res.status(200).json(
+                    users
+                )
+            }else{
+                return res.status(400).json({
+                    success:false,
+                    message:"Some error occured while fetching..."
+                })
+            }
+        }catch(err){
+            console.log(err)
+            console.log("Error while fetching the users")
+        }
+    }
+    async updateDetails(req,res){
+        const userId = req.userId   
+        console.log(userId)
+        try{
+            const user = await this.userRepository.getUser(userId)
+            
+            if(!user ){
+                return res.status(400).json({
+                    success:false,
+                    message:"User Invalid or UnAuthorized"
+                })
+            }
+            const {username , email ,gender} = req.body;
+            const result = await this.userRepository.updateUserDetails({username , email ,gender , userId})
+            return res.status(200).json({
+                success:true,
+                updatedUser : result
+            })
+        }catch(err){
+            // console.log(err)
+            console.log("Error while updating user details")
+        }
+    }
 }
