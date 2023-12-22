@@ -25,5 +25,18 @@ const cloudinaryUploadFile = async(localFilePath) =>{
     }
 }
 
+const cloudinaryRemoveFile = async(localFilePath) =>{
+    try{
+        if(!localFilePath) return null;
+        const resp = await cloudinary.uploader.destroy(localFilePath)
+        // fs.unlinkSync(localFilePath)
+        console.log("Old file removed successfully")
+        // console.log(JSON.stringify(resp))
+        return resp;
+    }catch(err){
+        console.log(err)
+        console.log("Error while removing the old file from cloudinary")
+    }
+}
 
-export {cloudinaryUploadFile}
+export {cloudinaryUploadFile , cloudinaryRemoveFile}

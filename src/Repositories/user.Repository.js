@@ -10,7 +10,6 @@ export default class UserRepository{
         try{
             await newUser.save()
             return newUser._doc;
-            
         }catch(err){
             console.log(err)
             console.log("Error while creating user ")

@@ -23,6 +23,9 @@ const userSchema = mongoose.Schema(
     bio: {
       type: String,
     },
+    imageCloudinaryPublicId:{
+      type:String,
+    },
     profilePicture: {
       type: String,
     },

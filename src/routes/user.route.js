@@ -1,7 +1,6 @@
 import express from "express"
 import userController from "../controllers/user.controller.js"
 import jwtAuth from "../middlewares/jwt.middleware.js"
-import {cloudinaryUploadFile} from "../Utils/cloudinary.utility.js"
 import { upload } from "../middlewares/fileupload.middleware.js" 
 
 const userRouter = express.Router()

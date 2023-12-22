@@ -26,7 +26,7 @@ export default class userController{
                 console.log("Cloudinary Response -> " + JSON.stringify(cloudinaryResponse))
             }
             const hashedPassword = await bcrypt.hash(password, 12)
-            const newUser = await this.userRepository.signup({username : name , email , gender , password:hashedPassword ,profilePicture : cloudinaryResponse? cloudinaryResponse.secure_url : undefined  })
+            const newUser = await this.userRepository.signup({username : name , email , gender , password:hashedPassword ,profilePicture : cloudinaryResponse? cloudinaryResponse.secure_url : undefined , imageCloudinaryPublicId:cloudinaryResponse.public_id })
             if(!newUser){
                 throw new Error("Error while creating Account")
             }
