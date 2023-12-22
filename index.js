@@ -1,12 +1,13 @@
 import express from "express"
 import {userRouter , otpRouter , friendRouter , postRouter , likeRouter , commentRouter} from "./src/routes/index.route.js"
-
+import cookieParser from "cookie-parser";
 
 
 
 
 const app = express()
 
+app.use(cookieParser());
 app.use(express.json())
 
 app.use('/api/users' ,userRouter )

@@ -18,13 +18,18 @@ const userSchema = mongoose.Schema(
     },
     fullName: {
       type: String,
-      required: true,
+      // required: true,
     },
     bio: {
       type: String,
     },
     profilePicture: {
       type: String,
+    },
+    gender:{
+      type:String,
+      required:true,
+      enum:['Male','Female','Other']
     },
     posts: [
       {
