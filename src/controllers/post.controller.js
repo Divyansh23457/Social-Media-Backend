@@ -1,8 +1,8 @@
 import PostRepository from "../Repositories/post.Repository.js"
-import UserModel from "../models/user.model.js";
+import {UserModel,CommentModel} from "../models/index.model.js";
 import { cloudinaryRemoveFile, cloudinaryUploadFile } from "../Utils/cloudinary.utility.js";
 import PostModel from "../models/post.model.js";
-import {ObjectId} from "mongodb"
+
 
 export default class PostController{
 
@@ -31,7 +31,7 @@ export default class PostController{
                 
             })
             return res.status(201).json({
-                success:false,
+                success:true,
                 post: createdPost
             })
         }catch(err){
@@ -162,17 +162,32 @@ export default class PostController{
         const userId = req.userId;
         const postId = req.params.postId
         try{
-            const post = await PostModel.findById(postId).select('imageCloudinaryPublicId')
+            const post = await PostModel.findById(postId).select('imageCloudinaryPublicId user comments')
             console.log(post)
-            const postImagePublicId = post.imageCloudinaryPublicId;
-            await PostModel.findByIdAndDelete(postId)
             if(!post){
+                return res.status(400).json({
+                    success:false,
+                    message:"Post could not be found"
+                })
+            }
+            const postImagePublicId = post.imageCloudinaryPublicId;
+            if(post.user != userId){
+                return res.status(400).json({
+                    success:false,
+                    message:"Only the owner of the post can remove the post"
+                })
+            }
+            const deleteResults= await PostModel.findByIdAndDelete(postId)
+            if(!deleteResults){
                 return res.status(400).json({
                     success:false,
                     message:"Error while deleting the post"
                 })
-            }else{
+            }
+            else{
                 await cloudinaryRemoveFile(postImagePublicId);
+                console.log(post)
+                post.comments.map(async(commentId) => await CommentModel.findByIdAndDelete(commentId))
                 return res.status(200).json({
                     success:true,
                     message:"Post deleted successfully"
