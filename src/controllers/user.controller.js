@@ -22,7 +22,7 @@ export default class userController{
         try{
             let cloudinaryResponse
             if(req.file){
-                cloudinaryResponse = await cloudinaryUploadFile(req.file.path)
+                //cloudinaryResponse = await cloudinaryUploadFile(req.file.path)
                 console.log("Cloudinary Response -> " + JSON.stringify(cloudinaryResponse))
             }
             const hashedPassword = await bcrypt.hash(password, 12)
