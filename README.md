@@ -68,7 +68,7 @@ Handle likes on posts or comments:
 
 - **GET /api/likes/:id**
   - Get likes for a specific post or comment.
-- **POST /api/likes/toggle/:id**
+- **GET /api/likes/toggle/:id**
   - Toggle like on a post or comment.
 
 ## Friendship
@@ -79,9 +79,9 @@ Manage user friendships:
   - Get a user's friends.
 - **GET /api/friends/get-pending-requests**
   - Get pending friend requests.
-- **POST /api/friends/toggle-friendship/:friendId**
+- **GET /api/friends/toggle-friendship/:friendId**
   - Toggle friendship with another user.
-- **POST /api/friends/response-to-request/:friendId**
+- **GET /api/friends/response-to-request/:friendId**
   - Accept or reject a friend request.
 
 ## OTP
